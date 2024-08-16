@@ -117,6 +117,7 @@ public class DishServiceImpl implements DishService {
      * 根据id修改菜品和对应的口味数据
      * @param dishDTO
      */
+    @Transactional
     public void updateWithFlavor(DishDTO dishDTO) {
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO,dish);
@@ -154,5 +155,29 @@ public class DishServiceImpl implements DishService {
         }
 
         return dishVOList;
+    }
+
+    /**
+     * 根据分类id查询菜品
+     * @param categoryId
+     * @return
+     */
+    public List<DishVO> getListByCategoryId(Long categoryId) {
+        List<Dish> dishList = dishMapper.getByCategoryId(categoryId);
+        List<DishVO> dishVOList = new ArrayList<>();
+        for (Dish dish : dishList) {
+            DishVO dishVO = new DishVO();
+            BeanUtils.copyProperties(dish,dishVO);
+            dishVOList.add(dishVO);
+        }
+        return dishVOList;
+    }
+
+    /**
+     * 菜品起售、停售
+     * @param dish
+     */
+    public void dishOpenOrShut(Dish dish) {
+        dishMapper.dishOpenOrShut(dish);
     }
 }

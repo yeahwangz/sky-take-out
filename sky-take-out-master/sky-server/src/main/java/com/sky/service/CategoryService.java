@@ -46,4 +46,11 @@ public interface CategoryService {
      * @return
      */
     List<Category> list(Integer type);
+
+    /**
+     * 根据分类id查询分类名称
+     * @param categoryId
+     * @return
+     */
+    String getNameById(Long categoryId);
 }

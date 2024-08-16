@@ -9,6 +9,7 @@ import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
@@ -50,8 +51,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         //密码比对
-        // TODO 后期需要进行md5加密，然后再进行比对
-        if (!password.equals(employee.getPassword())) {
+        String sqlPassword = DigestUtils.md5DigestAsHex(password.getBytes());
+        if (!sqlPassword.equals(employee.getPassword())) {
             //密码错误
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
         }
@@ -141,5 +142,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 //        employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.update(employee);
+    }
+
+    /**
+     * 修改密码
+     * @param passwordEditDTO
+     */
+    public Boolean editPassword(PasswordEditDTO passwordEditDTO) {
+        String oldPassword = passwordEditDTO.getOldPassword();
+        String newPassword = passwordEditDTO.getNewPassword();
+        passwordEditDTO.setOldPassword(DigestUtils.md5DigestAsHex(oldPassword.getBytes()));
+        Employee employee = employeeMapper.selectWithOldPassword(passwordEditDTO);
+        if (employee != null){
+            employee.setPassword(DigestUtils.md5DigestAsHex(newPassword.getBytes()));
+            employeeMapper.update(employee);
+            return true;
+        }
+        return false;
     }
 }

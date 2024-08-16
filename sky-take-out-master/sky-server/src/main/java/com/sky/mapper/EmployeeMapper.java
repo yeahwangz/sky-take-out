@@ -3,6 +3,7 @@ package com.sky.mapper;
 import com.github.pagehelper.Page;
 import com.sky.annotation.AutoFill;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.enumeration.OperationType;
 import org.apache.ibatis.annotations.Insert;
@@ -51,4 +52,14 @@ public interface EmployeeMapper {
      */
     @Select("select * from sky_take_out.employee where id = #{id}")
     Employee getById(Long id);
+
+    /**
+     * 根据id和输入的旧密码查询是否存在用户信息
+     * @param passwordEditDTO
+     * @return
+     */
+    @Select("select * from sky_take_out.employee where id = #{empId} and password = #{oldPassword}")
+    Employee selectWithOldPassword(PasswordEditDTO passwordEditDTO);
+
+
 }

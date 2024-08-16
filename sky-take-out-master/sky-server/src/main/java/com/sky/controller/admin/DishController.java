@@ -2,9 +2,12 @@ package com.sky.controller.admin;
 
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
+import com.sky.dto.SetmealPageQueryDTO;
+import com.sky.entity.Dish;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.DishService;
+import com.sky.vo.DishItemVO;
 import com.sky.vo.DishVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -105,5 +108,33 @@ public class DishController {
     private void cleanCache(String pattern){
         Set keys = redisTemplate.keys(pattern);
         redisTemplate.delete(keys);
+    }
+
+    /**
+     * 根据分类id查询菜品
+     * @return
+     */
+    @GetMapping("/list")
+    @ApiOperation("根据分类id查询菜品")
+    public Result<List<DishVO>> getByCategoryId(@RequestParam Long categoryId){
+        log.info("根据分类id查询菜品：{}",categoryId);
+        List<DishVO> dishVOList = dishService.getListByCategoryId(categoryId);
+        return Result.success(dishVOList);
+    }
+
+    /**
+     * 菜品起售、停售
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("菜品起售、停售")
+    public Result dishOpenOrShut(@PathVariable Integer status,@RequestParam Long id){
+        Dish dish = new Dish();
+        dish.setId(id);
+        dish.setStatus(status);
+        dishService.dishOpenOrShut(dish);
+        return Result.success();
     }
 }
