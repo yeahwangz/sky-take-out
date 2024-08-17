@@ -1,8 +1,10 @@
 package com.sky.service.impl;
 
+import com.sky.dto.ShoppingCartDTO;
 import com.sky.entity.ShoppingCart;
 import com.sky.mapper.ShoppingCartMapper;
 import com.sky.service.ShoppingCartService;
+import com.sky.vo.ShoppingCartVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,5 +47,29 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Transactional
     public void increaseNumber(Long cartId, Integer newNumber) {
         shoppingCartMapper.increaseNumber(cartId,newNumber);
+    }
+
+    /**
+     * 查看购物车
+     */
+    public List<ShoppingCartVO> getShoppingCarts() {
+        return shoppingCartMapper.getByShoppingCarts();
+    }
+
+    /**
+     * 清空购物车
+     */
+    @Transactional
+    public void cleanShoppingCarts() {
+        shoppingCartMapper.cleanShoppingCarts();
+    }
+
+    /**
+     * 删除购物车中一个商品
+     * @param shoppingCartDTO
+     */
+    @Transactional
+    public void cleanShoppingCart(ShoppingCartDTO shoppingCartDTO) {
+        shoppingCartMapper.cleanShoppingCart(shoppingCartDTO);
     }
 }

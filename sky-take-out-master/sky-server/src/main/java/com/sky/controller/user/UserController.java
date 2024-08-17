@@ -51,4 +51,16 @@ public class UserController {
                 .build();
         return Result.success(build);
     }
+
+    /**
+     * 微信
+     * @return
+     */
+    //Todo
+    @PostMapping("/logout")
+    @ApiOperation("退出")
+    public Result logout(){
+        log.info("退出");
+        return Result.success();
+    }
 }

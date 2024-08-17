@@ -9,21 +9,19 @@ import com.sky.service.DishService;
 import com.sky.service.SetmealService;
 import com.sky.service.ShoppingCartService;
 import com.sky.vo.DishVO;
+import com.sky.vo.ShoppingCartVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@RestController
+@RestController("userShoppingCartController")
 @RequestMapping("/user/shoppingCart")
 @Slf4j
 @Api(tags = "C端-购物车接口")
@@ -79,6 +77,41 @@ public class ShoppingCartController {
             shoppingCart.setNumber(1);
             shoppingCartService.add(shoppingCart);
         }
+        return Result.success();
+    }
+
+    /**
+     * 查看购物车
+     * @return
+     */
+    @GetMapping("/list")
+    @ApiOperation(value = "查看购物车")
+    public Result<List<ShoppingCartVO>> getShoppingCarts(){
+        log.info("查看购物车");
+        return Result.success(shoppingCartService.getShoppingCarts());
+    }
+
+    /**
+     * 清空购物车
+     * @return
+     */
+    @DeleteMapping("/clean")
+    @ApiOperation(value = "清空购物车")
+    public Result cleanShoppingCarts(){
+        log.info("清空购物车");
+        shoppingCartService.cleanShoppingCarts();
+        return Result.success();
+    }
+
+    /**
+     * 删除购物车中一个商品
+     * @param shoppingCartDTO
+     * @return
+     */
+    @PostMapping("/sub")
+    @ApiOperation("删除购物车中一个商品")
+    public Result cleanShoppingCart(@RequestBody ShoppingCartDTO shoppingCartDTO){
+        shoppingCartService.cleanShoppingCart(shoppingCartDTO);
         return Result.success();
     }
 }
