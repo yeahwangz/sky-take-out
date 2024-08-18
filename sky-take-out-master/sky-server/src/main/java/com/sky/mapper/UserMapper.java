@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.sky.entity.Orders;
 import com.sky.entity.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -20,4 +21,12 @@ public interface UserMapper {
      * @param byOpenid
      */
     void insert(User byOpenid);
+
+    /**
+     * 根据用户id查询用户
+     * @param userId
+     * @return
+     */
+    @Select("select * from sky_take_out.user where id = #{userId}")
+    User getById(Long userId);
 }
