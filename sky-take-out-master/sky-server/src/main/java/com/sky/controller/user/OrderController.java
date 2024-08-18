@@ -55,10 +55,11 @@ public class OrderController {
     * @param id
     * @return
     */
-   //Todo
+   //
    @GetMapping("/reminder/{id}")
    @ApiOperation("催单")
    public Result remind(@PathVariable Long id){
+      orderService.reminder(id);
       return Result.success();
    }
 
