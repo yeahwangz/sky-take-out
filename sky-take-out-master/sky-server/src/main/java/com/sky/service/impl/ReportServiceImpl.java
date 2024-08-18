@@ -4,6 +4,7 @@ import com.sky.entity.Orders;
 import com.sky.mapper.*;
 import com.sky.service.ReportService;
 import com.sky.vo.TurnoverReportVO;
+import com.sky.vo.UserReportVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private OrderMapper orderMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 营业额统计
@@ -51,6 +55,39 @@ public class ReportServiceImpl implements ReportService {
         return TurnoverReportVO.builder()
                 .dateList(StringUtils.join(dateArrayList,","))
                 .turnoverList(StringUtils.join(turnOverList,","))
+                .build();
+    }
+
+    /**
+     * 统计指定时间区间内的用户数据
+     * @param begin
+     * @param end
+     * @return
+     */
+    public UserReportVO getUserStatistics(LocalDate begin, LocalDate end) {
+        ArrayList<LocalDate> dateArrayList = new ArrayList<>();
+        dateArrayList.add(begin);
+        while (!begin.equals(end)){
+            begin = begin.plusDays(1);
+            dateArrayList.add(begin);
+        }
+        List<Integer> newUserList = new ArrayList<>();
+        List<Integer> totalUserList = new ArrayList<>();
+        for (LocalDate localDate : dateArrayList) {
+            LocalDateTime beginTime = LocalDateTime.of(localDate, LocalTime.MAX);
+            LocalDateTime endTime = LocalDateTime.of(localDate, LocalTime.MIN);
+            Map map = new HashMap<>();
+            map.put("end",endTime);
+            Integer totalUser = userMapper.countByMap(map);
+            map.put("begin",beginTime);
+            Integer newUser = userMapper.countByMap(map);
+            totalUserList.add(totalUser);
+            newUserList.add(newUser);
+        }
+        return UserReportVO.builder()
+                .dateList(StringUtils.join(dateArrayList,","))
+                .totalUserList(StringUtils.join(totalUserList,","))
+                .newUserList(StringUtils.join(newUserList,","))
                 .build();
     }
 }
