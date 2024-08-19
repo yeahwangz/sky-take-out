@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.OrderMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into sky_take_out.orders (number, user_id, status, address_book_id, order_time, checkout_time,
+                                         amount, remark, phone, address, user_name, consignee, cancel_reason,
+                                         rejection_reason, cancel_time, estimated_delivery_time, delivery_time,
+                                         pack_amount, tableware_number, pay_method, pay_status, delivery_status, tableware_status)
+        VALUES (#{number},#{userId},#{status},#{addressBookId},#{orderTime},#{checkoutTime},#{amount},#{remark},#{phone},
+                #{address},#{userName},#{consignee},#{cancelReason},#{rejectionReason},#{cancelTime},
+                #{estimatedDeliveryTime},#{deliveryTime},#{packAmount},#{tablewareNumber},#{payMethod},#{payStatus},#{deliveryStatus},#{tablewareStatus})
+    </insert>
+    <update id="update">
+        update sky_take_out.orders
+        <set>
+            <if test="cancelReason != null and cancelReason!='' ">
+                cancel_reason=#{cancelReason},
+            </if>
+            <if test="rejectionReason != null and rejectionReason!='' ">
+                rejection_reason=#{rejectionReason},
+            </if>
+            <if test="cancelTime != null">
+                cancel_time=#{cancelTime},
+            </if>
+            <if test="payStatus != null">
+                pay_status=#{payStatus},
+            </if>
+            <if test="payMethod != null">
+                pay_method=#{payMethod},
+            </if>
+            <if test="checkoutTime != null">
+                checkout_time=#{checkoutTime},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="deliveryTime != null">
+                delivery_time = #{deliveryTime}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="sumByMap" resultType="java.lang.Double">
+        select sum(amount) from sky_take_out.orders
+        <where>
+            <if test="begin != null">
+                and order_time &gt; #{begin}
+            </if>
+            <if test="end != null">
+                and order_time &lt; #{end}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="getOrderCount" resultType="java.lang.Integer">
+        select count(*) from sky_take_out.orders
+        <where>
+            <if test="begin != null">
+                and order_time &gt; #{begin}
+            </if>
+            <if test="end != null">
+                and order_time &lt; #{end}
+            </if>
+            <if test="status != null">
+                and status = 5
+            </if>
+        </where>
+    </select>
+</mapper>
