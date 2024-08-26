@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface DishMapper {
@@ -87,4 +88,11 @@ public interface DishMapper {
     @AutoFill(value = OperationType.UPDATE)
     @Update("update sky_take_out.dish set status = #{status} where id = #{id}")
     void dishOpenOrShut(Dish dish);
+
+    /**
+     * 根据条件统计菜品数量
+     * @param map
+     * @return
+     */
+    Integer countByMap(Map map);
 }
